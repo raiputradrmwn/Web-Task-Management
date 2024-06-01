@@ -1,11 +1,7 @@
 "use client";
 import {
   LucideIcon,
-  LayoutDashboard,
-  BadgeDollarSign,
-  CircleUserRound,
-  Settings,
-  WalletCards,
+  ClipboardList, CheckCircle
 } from "lucide-react";
 import SidebarItem from "./item";
 
@@ -25,12 +21,12 @@ const items: ISidebarItem[] = [
   {
     name: "All Task",
     path: "/",
-    icon: LayoutDashboard,
+    icon: ClipboardList,
   },
   {
     name: "Completed",
     path: "/completed",
-    icon: BadgeDollarSign,
+    icon: CheckCircle,
   },
 
 ];
