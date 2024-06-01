@@ -6,18 +6,7 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'GET') {
-      // Extract query parameters for filtering
-      const { completed } = req.query;
-      
-      let tasks;
-      if (completed === 'true') {
-        tasks = await prisma.task.findMany({
-          where: { completed: true }
-        });
-      } else {
-        tasks = await prisma.task.findMany();
-      }
-
+      const tasks = await prisma.task.findMany();
       res.status(200).json(tasks);
     } else if (req.method === 'POST') {
       const { title, description } = req.body;
@@ -26,7 +15,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(400).json({ error: 'Title is required' });
         return;
       }
-
       const newTask = await prisma.task.create({
         data: { title, description: description || "", completed: false },
       });

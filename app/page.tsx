@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Card, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card'; 
+import { Button } from '@/components/ui/button';
 
 interface Task {
   id: number;
@@ -14,6 +16,8 @@ const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [editId, setEditId] = useState<number | null>(null);
+  const [editDescription, setEditDescription] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -58,6 +62,27 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleEdit = (id: number, description: string) => {
+    setEditId(id);
+    setEditDescription(description);
+  };
+
+  const saveDescription = async (id: number) => {
+    try {
+      const response = await axios.put(`/api/tasks/${id}`, { description: editDescription });
+      if (response.status === 200) {
+        setTasks(prev => prev.map(task => task.id === id ? { ...task, description: editDescription } : task));
+        setEditId(null);
+      }
+    } catch (error) {
+      console.error('Failed to update task:', error);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditId(null);  
+  };
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">All Tasks</h1>
@@ -81,26 +106,51 @@ const Home: React.FC = () => {
           onChange={(e) => setDescription(e.target.value)}
           className="px-4 py-2 border rounded"
         />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+        <Button type="submit" variant="default">
           Add Task
-        </button>
+        </Button>
       </form>
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {tasks.map((task) => (
-          <div key={task.id} className="p-4 border rounded">
-            <h2 className="text-xl font-bold">{task.title}</h2>
-            <p>{task.description}</p>
-            <p>Status: {task.completed ? 'Completed' : 'Not Completed'}</p>
-            <button onClick={() => toggleCompletion(task)} className="px-2 py-1 text-white bg-green-500 rounded hover:bg-green-600">
-              Toggle Status
-            </button>
-            <button onClick={() => deleteTask(task.id)} className="px-2 py-1 ml-2 text-white bg-red-500 rounded hover:bg-red-600">
-              Delete
-            </button>
-          </div>
+          <Card key={task.id} style={{ minWidth: '300px', flexGrow: 1, padding: '10px' }}>
+            <CardContent>
+              <CardTitle className='pb-2'>{task.title}</CardTitle>
+              {editId === task.id ? (
+                <textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  className="px-4 py-2 border rounded w-full"
+                />
+              ) : (
+                <CardDescription>{task.description}</CardDescription>
+              )}
+              <p>Status: {task.completed ? 'Completed' : 'Not Completed'}</p>
+            </CardContent>
+            <CardFooter>
+              {editId === task.id ? (
+                <>
+                  <Button onClick={() => saveDescription(task.id)} variant="secondary">
+                    Save
+                  </Button>
+                  <Button onClick={cancelEdit} variant="destructive" className="ml-2">
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={() => handleEdit(task.id, task.description)} variant="secondary">
+                    Edit
+                  </Button>
+                  <Button onClick={() => toggleCompletion(task)} variant="default" className="ml-2">
+                    Toggle Status
+                  </Button>
+                  <Button onClick={() => deleteTask(task.id)} variant="destructive" className="ml-2">
+                    Delete
+                  </Button>
+                </>
+              )}
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
