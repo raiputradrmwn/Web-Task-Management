@@ -142,7 +142,6 @@ const Home: React.FC = () => {
 
         <Button
           type="submit"
-          variant="primary"
           className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           Add Task
