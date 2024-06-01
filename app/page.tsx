@@ -1,15 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import axios from "axios";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Card, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface Task {
   id: number;
@@ -20,10 +13,10 @@ interface Task {
 
 const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [editId, setEditId] = useState<number | null>(null);
-  const [editDescription, setEditDescription] = useState("");
+  const [editDescription, setEditDescription] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -75,9 +68,7 @@ const Home: React.FC = () => {
 
   const saveDescription = async (id: number) => {
     try {
-      const response = await axios.put(`/api/tasks/${id}`, {
-        description: editDescription,
-      });
+      const response = await axios.put(`/api/tasks/${id}`, { description: editDescription });
       if (response.status === 200) {
         setTasks((prev) =>
           prev.map((task) =>
@@ -98,7 +89,6 @@ const Home: React.FC = () => {
   return (
     <div className="space-y-4 bg-gray-100 p-4">
       <div className="flex justify-center items-center h-20">
-        {" "}
         <img
           className="h-10 w-auto object-contain max-w-full"
           src="/logo.png"
@@ -122,7 +112,7 @@ const Home: React.FC = () => {
             placeholder="Enter task title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="form-input px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="form-input px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 w-full"
           />
         </div>
 
@@ -135,7 +125,7 @@ const Home: React.FC = () => {
             placeholder="Enter task description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="form-textarea px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="form-textarea px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 w-full"
             rows={4}
           />
         </div>
@@ -148,20 +138,11 @@ const Home: React.FC = () => {
         </Button>
       </form>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+      <div className="flex flex-wrap gap-4 justify-center">
         {tasks.map((task) => (
           <Card
             key={task.id}
-            style={{
-              minWidth: "400px",
-              maxWidth: "400px",
-              flexBasis: "calc(33.333% - 20px)",
-              padding: "10px",
-              boxSizing: "border-box",
-              backgroundColor: task.completed
-                ? "rgba(76, 175, 80, 0.3)"
-                : "rgba(158, 158, 158, 0.3)", // Conditional background color
-            }}
+            className="min-w-[300px] max-w-[400px] w-full md:w-1/2 lg:w-1/4 p-4"
           >
             <CardContent>
               <CardTitle className="pb-2">{task.title}</CardTitle>
