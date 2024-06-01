@@ -1,8 +1,14 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Card, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface Task {
   id: number;
@@ -13,10 +19,10 @@ interface Task {
 
 const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [editId, setEditId] = useState<number | null>(null);
-  const [editDescription, setEditDescription] = useState('');
+  const [editDescription, setEditDescription] = useState("");
 
   useEffect(() => {
     fetchTasks();
@@ -68,7 +74,9 @@ const Home: React.FC = () => {
 
   const saveDescription = async (id: number) => {
     try {
-      const response = await axios.put(`/api/tasks/${id}`, { description: editDescription });
+      const response = await axios.put(`/api/tasks/${id}`, {
+        description: editDescription,
+      });
       if (response.status === 200) {
         setTasks((prev) =>
           prev.map((task) =>
@@ -142,7 +150,14 @@ const Home: React.FC = () => {
         {tasks.map((task) => (
           <Card
             key={task.id}
-            className="min-w-[300px] max-w-[400px] w-full md:w-1/2 lg:w-1/4 p-4"
+            className={`min-w-[300px] max-w-[400px] w-full md:w-1/2 lg:w-1/4 p-4 ${
+              task.completed ? "bg-green-200" : "bg-gray-300"
+            }`}
+            style={{
+              flexBasis: "calc(33.333% - 20px)",
+              padding: "10px",
+              boxSizing: "border-box",
+            }}
           >
             <CardContent>
               <CardTitle className="pb-2">{task.title}</CardTitle>
@@ -153,9 +168,13 @@ const Home: React.FC = () => {
                   className="px-4 py-2 border rounded w-full"
                 />
               ) : (
-                <CardDescription>{task.description}</CardDescription>
+                <CardDescription className="text-lg pb-2">
+                  {task.description}
+                </CardDescription>
               )}
-              <p>Status: {task.completed ? "Completed" : "Not Completed"}</p>
+              <p className="text-lg">
+                {task.completed ? "Completed" : "Not Completed"}
+              </p>
             </CardContent>
             <CardFooter>
               {editId === task.id ? (
